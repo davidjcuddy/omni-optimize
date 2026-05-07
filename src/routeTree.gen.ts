@@ -9,8 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TechnicalRouteImport } from './routes/technical'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as CoreSeoRouteImport } from './routes/core-seo'
+import { Route as AeoRouteImport } from './routes/aeo'
+import { Route as AemHubRouteImport } from './routes/aem-hub'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TechnicalRoute = TechnicalRouteImport.update({
+  id: '/technical',
+  path: '/technical',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoreSeoRoute = CoreSeoRouteImport.update({
+  id: '/core-seo',
+  path: '/core-seo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AeoRoute = AeoRouteImport.update({
+  id: '/aeo',
+  path: '/aeo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AemHubRoute = AemHubRouteImport.update({
+  id: '/aem-hub',
+  path: '/aem-hub',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +49,96 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/aem-hub': typeof AemHubRoute
+  '/aeo': typeof AeoRoute
+  '/core-seo': typeof CoreSeoRoute
+  '/settings': typeof SettingsRoute
+  '/technical': typeof TechnicalRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/aem-hub': typeof AemHubRoute
+  '/aeo': typeof AeoRoute
+  '/core-seo': typeof CoreSeoRoute
+  '/settings': typeof SettingsRoute
+  '/technical': typeof TechnicalRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/aem-hub': typeof AemHubRoute
+  '/aeo': typeof AeoRoute
+  '/core-seo': typeof CoreSeoRoute
+  '/settings': typeof SettingsRoute
+  '/technical': typeof TechnicalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/aem-hub'
+    | '/aeo'
+    | '/core-seo'
+    | '/settings'
+    | '/technical'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/aem-hub' | '/aeo' | '/core-seo' | '/settings' | '/technical'
+  id:
+    | '__root__'
+    | '/'
+    | '/aem-hub'
+    | '/aeo'
+    | '/core-seo'
+    | '/settings'
+    | '/technical'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AemHubRoute: typeof AemHubRoute
+  AeoRoute: typeof AeoRoute
+  CoreSeoRoute: typeof CoreSeoRoute
+  SettingsRoute: typeof SettingsRoute
+  TechnicalRoute: typeof TechnicalRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/technical': {
+      id: '/technical'
+      path: '/technical'
+      fullPath: '/technical'
+      preLoaderRoute: typeof TechnicalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/core-seo': {
+      id: '/core-seo'
+      path: '/core-seo'
+      fullPath: '/core-seo'
+      preLoaderRoute: typeof CoreSeoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aeo': {
+      id: '/aeo'
+      path: '/aeo'
+      fullPath: '/aeo'
+      preLoaderRoute: typeof AeoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aem-hub': {
+      id: '/aem-hub'
+      path: '/aem-hub'
+      fullPath: '/aem-hub'
+      preLoaderRoute: typeof AemHubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,7 +151,22 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AemHubRoute: AemHubRoute,
+  AeoRoute: AeoRoute,
+  CoreSeoRoute: CoreSeoRoute,
+  SettingsRoute: SettingsRoute,
+  TechnicalRoute: TechnicalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
